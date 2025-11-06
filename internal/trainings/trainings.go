@@ -58,15 +58,10 @@ func (t *Training) Parse(datastring string) (err error) {
 }
 
 func (t Training) ActionInfo() (string, error) {
-	// Тип тренировки: Бег
 	info := fmt.Sprintf("Тип тренировки: %s\n", t.TrainingType)
-	// Длительность: 0.75 ч.
 	info += fmt.Sprintf("Длительность: %.2f ч.\n", t.Duration.Hours())
-	// Дистанция: 10.00 км.
 	info += fmt.Sprintf("Дистанция: %.2f км.\n", spentenergy.Distance(t.Steps, t.Personal.Height))
-	// Скорость: 13.34 км/ч
 	info += fmt.Sprintf("Скорость: %.2f км/ч\n", spentenergy.MeanSpeed(t.Steps, t.Personal.Height, t.Duration))
-	// Сожгли калорий: 18621.75
 	switch t.TrainingType {
 	case "Бег":
 		res, err := spentenergy.RunningSpentCalories(t.Steps, t.Personal.Weight, t.Personal.Height, t.Duration)
