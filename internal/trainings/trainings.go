@@ -3,7 +3,6 @@ package trainings
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -16,13 +15,13 @@ type Training struct {
 	Steps        int
 	TrainingType string
 	Duration     time.Duration
-	Personal     personaldata.Personal
+	personaldata.Personal
 }
 
 func (t *Training) Parse(datastring string) (err error) {
 	splitedDatastring := strings.Split(datastring, ",")
 	if len(splitedDatastring) != 3 {
-		return errors.New("wrong paramets length")
+		return errors.New("incorrect arguments count, should be 3")
 	}
 
 	steps, err := strconv.Atoi(splitedDatastring[0])
@@ -48,7 +47,6 @@ func (t *Training) Parse(datastring string) (err error) {
 	}
 
 	if durationTime.Seconds() <= 0 {
-		log.Println(splitedDatastring[2], durationTime, durationTime.Seconds())
 		return errors.New("time duration is 0 or less")
 	}
 
@@ -60,11 +58,11 @@ func (t *Training) Parse(datastring string) (err error) {
 func (t Training) ActionInfo() (string, error) {
 	info := fmt.Sprintf("Тип тренировки: %s\n", t.TrainingType)
 	info += fmt.Sprintf("Длительность: %.2f ч.\n", t.Duration.Hours())
-	info += fmt.Sprintf("Дистанция: %.2f км.\n", spentenergy.Distance(t.Steps, t.Personal.Height))
-	info += fmt.Sprintf("Скорость: %.2f км/ч\n", spentenergy.MeanSpeed(t.Steps, t.Personal.Height, t.Duration))
+	info += fmt.Sprintf("Дистанция: %.2f км.\n", spentenergy.Distance(t.Steps, t.Height))
+	info += fmt.Sprintf("Скорость: %.2f км/ч\n", spentenergy.MeanSpeed(t.Steps, t.Height, t.Duration))
 	switch t.TrainingType {
 	case "Бег":
-		res, err := spentenergy.RunningSpentCalories(t.Steps, t.Personal.Weight, t.Personal.Height, t.Duration)
+		res, err := spentenergy.RunningSpentCalories(t.Steps, t.Weight, t.Height, t.Duration)
 
 		if err != nil {
 			return "", err
@@ -72,7 +70,7 @@ func (t Training) ActionInfo() (string, error) {
 
 		info += fmt.Sprintf("Сожгли калорий: %.2f\n", res)
 	case "Ходьба":
-		res, err := spentenergy.WalkingSpentCalories(t.Steps, t.Personal.Weight, t.Personal.Height, t.Duration)
+		res, err := spentenergy.WalkingSpentCalories(t.Steps, t.Weight, t.Height, t.Duration)
 
 		if err != nil {
 			return "", err
